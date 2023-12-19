@@ -3,8 +3,16 @@
   hosts: frontend
   become: true
   become_method: ansible.builtin.sudo
+  vars_files:
+    - ./tf_ansible_vars_file.yml
 
   tasks:
+    - name: Check mandatory variables imported from Terraform
+      assert:
+        that:
+          - tf_frontend_public_ip is defined
+        fail_msg: "tf_* variable usually defined in './tf_ansible_vars_file.yml' is missing"
+
     - name: Install pip
       ansible.builtin.apt:
         update_cache: true
