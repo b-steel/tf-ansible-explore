@@ -69,5 +69,5 @@
         state: started
         published_ports: 3000:3000
 
-    - name: Rhow running images
+    - name: Show running images
       ansible.builtin.command: docker images
