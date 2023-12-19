@@ -1,26 +1,27 @@
 ---
-- hosts: frontend
-  become: yes
-  become_method: sudo
+- name: Provision frontend
+  hosts: frontend
+  become: true
+  become_method: ansible.builtin.sudo
 
   tasks:
     - name: Install pip
-      apt:
-        update_cache: yes
+      ansible.builtin.apt:
+        update_cache: true
         name: python3-pip
 
     - name: Install aptitude using apt
-      apt:
+      ansible.builtin.apt:
         name: aptitude
         state: latest
-        update_cache: yes
-        force_apt_get: yes
+        update_cache: true
+        force_apt_get: true
 
     - name: Install required system packages
-      apt:
+      ansible.builtin.apt:
         name: "{{ item }}"
         state: latest
-        update_cache: yes
+        update_cache: true
       loop:
         [
           "apt-transport-https",
@@ -33,40 +34,40 @@
         ]
 
     - name: Add Docker GPG apt Key
-      apt_key:
+      ansible.builtin.apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
     - name: Add Docker Repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
 
     - name: Update apt and install docker-ce
-      apt:
+      ansible.builtin.apt:
         name: docker-ce
-        update_cache: yes
+        update_cache: true
         state: latest
 
-    - name: install docker-py
-      pip:
+    - name: Install docker-py
+      ansible.builtin.pip:
         name: docker-py
 
-    - name: enable Docker services
+    - name: Enable Docker services
       service:
         name: "docker"
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Check if container is running
-      shell: docker ps
+      ansible.builtin.command: docker ps
 
-    - name: run docker image
-      docker_container:
+    - name: Run frontend image
+      community.docker.docker_container:
         name: remix-demo
         image: 3steel/remix-demo:latest
         state: started
         published_ports: 3000:3000
 
-    - name: show running images
-      shell: docker images
+    - name: Rhow running images
+      ansible.builtin.command: docker images

@@ -101,11 +101,11 @@ resource "aws_route_table_association" "private_rt_association" {
 resource "aws_security_group" "remix_frontend_sg" {
   description = "Security Group for remix-frontend EC2 instance"
   vpc_id = aws_vpc.test_vpc.id
-
+  
   ingress {
     description = "http"
-    from_port   = 80
-    to_port     = 80
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -138,6 +138,7 @@ resource "aws_instance" "remix-frontend" {
   vpc_security_group_ids = [aws_security_group.remix_frontend_sg.id]
   key_name = "admin"
   associate_public_ip_address = true
+  
 
   tags = {
     Name = var.frontend_instance_name
