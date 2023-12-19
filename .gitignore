@@ -36,3 +36,7 @@ node_modules
 # Ansible
 *.retry
 
+# Prisma
+**/prisma/dev.db
+
+
